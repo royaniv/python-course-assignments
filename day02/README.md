@@ -8,3 +8,4 @@ e.g., N0 = 100, r = 0.05, t = 10
 
 Using ChatGPT I asked: "what should I write in expontential growth to give 'e' in python?  
 The answer was math.exp
+Also the explanations for each term include suggestions that I was given when writing the code in the file.
