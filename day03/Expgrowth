@@ -18,4 +18,5 @@ def expgrowth():
     N = N0 * math.exp((r - k) * t)
     return N
 
-
+if __name__ == "__main__":    final_amount = expgrowth()
+    print(f"Final amount (N) after time t: {final_amount}") 
