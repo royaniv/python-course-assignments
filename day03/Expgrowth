@@ -19,4 +19,4 @@ def expgrowth():
     return N
 
 if __name__ == "__main__":    final_amount = expgrowth()
-    print(f"Final amount (N) after time t: {final_amount}") 
+print(f"Final amount (N) after time t: {final_amount}") 
