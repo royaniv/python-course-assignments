@@ -10,11 +10,12 @@
 
 import math
 
-N0 = float(input("initial amount (N0): "))
-r = float(input("growth rate (r): "))
-t = float(input("time (t): "))
-k = float(input("decay rate (k): "))
+def expgrowth():
+    N0 = float(input("initial amount (N0): "))
+    r = float(input("growth rate (r): "))
+    t = float(input("time (t): "))
+    k = float(input("decay rate (k): "))
+    N = N0 * math.exp((r - k) * t)
+    return N
 
-N = N0 * math.exp((r-k) * t)
 
-print("Final amount:", N)
