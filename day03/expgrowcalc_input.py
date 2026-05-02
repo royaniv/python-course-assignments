@@ -1,6 +1,6 @@
 # exponential growth calculation using a function and input
 
-from expgrowfunct import expgrowth
+from funct import expgrowth
 
 if __name__ == "__main__":
     N0 = float(input("initial amount (N0): "))

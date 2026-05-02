@@ -1,6 +1,6 @@
 import sys
 
-from expgrowfunct import expgrowth
+from funct import expgrowth
 
 
 if __name__ == "__main__":

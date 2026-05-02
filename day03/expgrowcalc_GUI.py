@@ -1,5 +1,5 @@
 import tkinter as tk
-from expgrowfunct import expgrowth
+from funct import expgrowth
 
 
 def calculate():
