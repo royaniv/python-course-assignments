@@ -10,7 +10,7 @@ def calculate():
         k = float(entry_k.get())
 
         final_amount = expgrowth(N0, r, t, k)
-        result_label.config(text=f"Final amount (N): {final_amount:.4f}")
+        result_label.config(text=f"Final amount (N(t)): {final_amount:.4f}")
 
     except ValueError:
         result_label.config(text="Error: please enter valid numbers")

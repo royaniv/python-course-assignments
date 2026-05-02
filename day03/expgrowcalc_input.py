@@ -9,4 +9,4 @@ if __name__ == "__main__":
     k = float(input("decay rate (k): "))
 
     final_amount = expgrowth(N0, r, t, k)
-    print(f"Final amount (N) after time t: {final_amount}")
+    print(f"Final amount (N(t)): {final_amount}")
