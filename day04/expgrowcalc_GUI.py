@@ -1,8 +1,10 @@
 import tkinter as tk
+import matplotlib.pyplot as plt
 from funct import expgrowth
 
 
 def calculate():
+    
     try:
         N0 = float(entry_N0.get())
         r = float(entry_r.get())
@@ -15,6 +17,36 @@ def calculate():
     except ValueError:
         result_label.config(text="Error: please enter valid numbers")
 
+def plot_graph():
+
+    try:
+        N0 = float(entry_N0.get())
+        r = float(entry_r.get())
+        t = float(entry_t.get())
+        k = float(entry_k.get())
+
+        times = []
+        values = []
+
+        current_time = 0
+
+        while current_time <= t:
+
+            value = expgrowth(N0, r, current_time, k)
+
+            times.append(current_time)
+            values.append(value)
+
+            current_time += 1
+
+        plt.plot(times, values)
+        plt.xlabel("Time")
+        plt.ylabel("N(t)")
+        plt.title("Exponential Growth")
+        plt.show()
+
+    except ValueError:
+        result_label.config(text="Error: please enter valid numbers")
 
 # Window
 root = tk.Tk()
@@ -48,6 +80,7 @@ entry_k.pack()
 
 # Button
 tk.Button(root, text="Calculate", command=calculate).pack(pady=10)
+tk.Button(root, text="Plot Growth Curve", command=plot_graph).pack(pady=5)
 
 # Output
 result_label = tk.Label(root, text="")
