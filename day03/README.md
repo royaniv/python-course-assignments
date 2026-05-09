@@ -1,6 +1,6 @@
 copied over from day02:
 Exponential Growth Calculation  
-This program calculates the final amount (N) after a certain time (t) given an initial amount (N0) and a growth rate (r) using the formula:N = N0 * e^(r * t)  
+This program calculates the final amount (N) after a certain time (t) given an initial amount (N0) and a growth rate (r) using the formula:N = N0 * e^((r-k) * t)
 N0 = initial number of items  
 r = growth rate (per unit time) e.g., 0.05 for 5% growth per unit time  
 t = time (in the same units as the growth rate)  
