@@ -55,7 +55,7 @@ def plot_graph():
 
 def save_history():
 
-    file = open("history.txt", "w")
+    file = open("expgrowcalc_GUI_history.txt", "w")
     file.write(str(history))
     file.close()
 
