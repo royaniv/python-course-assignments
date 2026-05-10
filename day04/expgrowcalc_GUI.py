@@ -2,6 +2,7 @@ import tkinter as tk
 import matplotlib.pyplot as plt
 from funct import expgrowth
 
+history = []
 
 def calculate():
     
@@ -16,6 +17,10 @@ def calculate():
 
     except ValueError:
         result_label.config(text="Error: please enter valid numbers")
+
+    history.append(f"{final_amount:.4f}")
+
+    history_label.config(text=str(history))
 
 def plot_graph():
 
@@ -48,10 +53,24 @@ def plot_graph():
     except ValueError:
         result_label.config(text="Error: please enter valid numbers")
 
+def save_history():
+
+    file = open("history.txt", "w")
+    file.write(str(history))
+    file.close()
+
+def clear_fields():
+
+    entry_N0.delete(0, tk.END)
+    entry_r.delete(0, tk.END)
+    entry_t.delete(0, tk.END)
+    entry_k.delete(0, tk.END)
+
+    result_label.config(text="")
 # Window
 root = tk.Tk()
 root.title("Exponential Growth Calculator")
-root.geometry("320x300")
+root.geometry("400x500")
 
 # Equation (shown at top)
 equation_label = tk.Label(
@@ -81,10 +100,15 @@ entry_k.pack()
 # Button
 tk.Button(root, text="Calculate", command=calculate).pack(pady=10)
 tk.Button(root, text="Plot Growth Curve", command=plot_graph).pack(pady=5)
+tk.Button(root, text="Clear", command=clear_fields).pack(pady=5)
+tk.Button(root, text="Save History", command=save_history).pack(pady=5)
 
 # Output
 result_label = tk.Label(root, text="")
 result_label.pack()
+
+history_label = tk.Label(root, text="")
+history_label.pack()
 
 # Run
 root.mainloop()
