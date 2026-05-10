@@ -5,7 +5,7 @@ Now to add a Plot Growth Curve graph and a button so when clicked it will calcul
 1. Added a "def plot_graph():" 
 2. Added a button to create the growth curve "- tk.Button(root, text="Plot Growth Curve", command=plot_graph).pack(pady=5)".
 
-I also added save history button under" def history():" and clear button "def clear_fields():" and a show history with "history = []", "history.append(f"{final_amount:.4f}")", "history_label.config(text=str(history))".
+I also added save history button under "def save_history():" and clear button "def clear_fields():" and a show history with "history = []", "history.append(f"{final_amount:.4f}")", "history_label.config(text=str(history))".
 
 I also added a "requirements.txt" files with "matplotlib" and generated a ".gitignore" file so pycache is no on github.
 
