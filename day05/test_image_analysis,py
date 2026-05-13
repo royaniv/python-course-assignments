@@ -1,0 +1,12 @@
+from image_analysis import analyze_image
+
+def test_analyze_image():
+
+    average, darkest, brightest, percent_bright = analyze_image(
+        "input/heatmap.png"
+    )
+
+    assert average >= 0
+    assert brightest <= 255
+    assert darkest >= 0
+    assert percent_bright >= 0
