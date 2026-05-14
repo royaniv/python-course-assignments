@@ -2,7 +2,7 @@
 
 ## Description
 
-This program analyzes a carpet plot image from the lab and detects composome regions.
+This program analyzes a carpet plot image from the lab and detects composome regions (A composome is a self-reproducing compositional assembly of amphiphilic molecules that maintains its internal chemical proportions during catalytic growth and fission. Unlike sequence-based replicators like RNA, it transmits primordial information solely through a homeostatic network of molecular concentrations).
 
 The carpet plot is a similarity matrix:
 - red/yellow areas represent similar compositions
@@ -33,3 +33,5 @@ The program:
 - requirements.txt  
   Required Python libraries
 
+## ChatGPT
+I used various prompts to help with this. At first I asked it to help create an image analysis program based on pixels but had to refine my prompts since I needed to look at pixels for the under diagonal line only and also concentrate on those on the off diagonal to confirm composome.
