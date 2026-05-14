@@ -1,12 +1,35 @@
-Heatmap Image Analysis
+# Day 05 - Composome Detection
 
-This program analyzes a laboratory heatmap image.
+## Description
 
-The program calculates:
+This program analyzes a carpet plot image from the lab and detects composome regions.
 
-Average pixel intensity
-Darkest pixel value
-Brightest pixel value
-Percentage of bright pixels
+The carpet plot is a similarity matrix:
+- red/yellow areas represent similar compositions
+- blue areas represent less similar compositions
 
-The program uses the Pillow library to open and analyze the image.
+Large red/yellow squares along the diagonal correspond to composomes.
+
+The program:
+- opens the image
+- scans the diagonal region
+- compares red intensity to blue intensity
+- detects composome blocks
+- counts red and non-red regions
+
+---
+
+## Files
+
+- image_analysis.py  
+  Main analysis program
+
+- test_image_analysis.py  
+  Automated tests
+
+- composition_carpetplot.png  
+  Input image from the lab
+
+- requirements.txt  
+  Required Python libraries
+

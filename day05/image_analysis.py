@@ -1,36 +1,63 @@
 from PIL import Image
 
-def analyze_image(composition_carpetplot):
-    img = Image.open(composition_carpetplot)
 
-    grayscale = img.convert("L")
+def detect_composomes(image_file):
 
-    pixels = list(grayscale.getdata())
+    img = Image.open(image_file)
+    img = img.convert("RGB")
 
-    average = sum(pixels) / len(pixels)
+    width, height = img.size
 
-    darkest = min(pixels)
+    composomes = 0
 
-    brightest = max(pixels)
+    red_regions = 0
+    non_red_regions = 0
 
-    bright_pixels = 0
+    inside_composome = False
 
-    for pixel in pixels:
-        if pixel > 200:
-            bright_pixels += 1
+    for i in range(width):
 
-    percent_bright = (bright_pixels / len(pixels)) * 100
+        red_total = 0
+        blue_total = 0
 
-    return average, darkest, brightest, percent_bright
+        # check around diagonal
+        for offset in range(-25, 26):
+
+            x = i + offset
+            y = i
+
+            if x < 0 or x >= width:
+                continue
+
+            r, g, b = img.getpixel((x, y))
+
+            red_total += r
+            blue_total += b
+
+        # strongly red/yellow region
+        if red_total > blue_total + 4000:
+
+            red_regions += 1
+
+            if not inside_composome:
+
+                composomes += 1
+                inside_composome = True
+
+        else:
+
+            non_red_regions += 1
+            inside_composome = False
+
+    return composomes, red_regions, non_red_regions
 
 
 if __name__ == "__main__":
 
-    average, darkest, brightest, percent_bright = analyze_image(
+    composomes, red_regions, non_red_regions = detect_composomes(
         "composition_carpetplot.png"
     )
 
-    print("Average intensity:", average)
-    print("Darkest pixel:", darkest)
-    print("Brightest pixel:", brightest)
-    print("Percent bright pixels:", percent_bright)
+    print("Composomes detected:", composomes)
+    print("Red diagonal regions:", red_regions)
+    print("Non-red diagonal regions:", non_red_regions)

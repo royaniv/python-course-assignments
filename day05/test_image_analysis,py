@@ -1,12 +1,28 @@
-from image_analysis import analyze_image
+from image_analysis import detect_composomes
 
-def test_analyze_image():
 
-    average, darkest, brightest, percent_bright = analyze_image(
-        "input/heatmap.png"
+def test_composomes_found():
+
+    composomes, red_regions, non_red_regions = detect_composomes(
+        "composition_carpetplot.png"
     )
 
-    assert average >= 0
-    assert brightest <= 255
-    assert darkest >= 0
-    assert percent_bright >= 0
+    assert composomes > 0
+
+
+def test_red_regions_found():
+
+    composomes, red_regions, non_red_regions = detect_composomes(
+        "composition_carpetplot.png"
+    )
+
+    assert red_regions > 0
+
+
+def test_non_red_regions_found():
+
+    composomes, red_regions, non_red_regions = detect_composomes(
+        "composition_carpetplot.png"
+    )
+
+    assert non_red_regions > 0
