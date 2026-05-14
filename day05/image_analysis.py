@@ -26,7 +26,7 @@ def detect_composomes(image_file):
         blue_total = 0
 
         # check nearby pixels around diagonal
-        for offset in range(-25, 26):
+        for offset in range(-25, 25):
 
             x = i + offset
             y = i

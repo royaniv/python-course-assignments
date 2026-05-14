@@ -17,6 +17,10 @@ The program:
 - detects composome blocks
 - counts red and non-red regions
 
+## Example of composome regions
+
+![Composome explanation](program_explanation_on_image.png)
+
  It should identify 4 composomes which it does.
 
 
