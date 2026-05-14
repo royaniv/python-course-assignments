@@ -19,7 +19,7 @@ The program:
 
 ## Example of composome regions
 
-![Composome explanation](program_explanation_on_image.png)
+![Composome explanation](composome_program_explanation_on_image.png)
 
  It should identify 4 composomes which it does.
 
