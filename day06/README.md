@@ -1,1 +1,1 @@
-added pubchem_lipids.py to download info from pubchem and create plot
+Used ChatGPT : prompt - I want to download info about amphiphiles and compare it in a plot. added pubchem_lipids.py to download info from pubchem and create plot.
