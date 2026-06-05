@@ -3,19 +3,36 @@ import matplotlib.pyplot as plt
 
 compounds = [
     "octanol",
-    "octylamine",
-    "octanoic acid",
+    "decanol",
     "dodecanol",
-    "dodecylamine",
-    "dodecanoic acid",
+    "tetradecanol",
     "cetyl alcohol",
-    "cetylamine"
+
+    "octylamine",
+    "decylamine",
+    "dodecylamine",
+    "tetradecylamine",
+    "cetylamine",
+
+    "octanoic acid",
+    "decanoic acid",
+    "dodecanoic acid",
+    "tetradecanoic acid",
+
+    "oleyl alcohol",
+    "oleylamine",
+
+    "sodium dodecyl sulfate",
+
 ]
 
+valid_compounds = []
 tpsas = []
 xlogps = []
 
 for compound in compounds:
+
+    print("Looking up:", compound)
 
     url = f"https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/{compound}/property/XLogP,TPSA/JSON"
 
@@ -25,24 +42,34 @@ for compound in compounds:
 
     properties = data["PropertyTable"]["Properties"][0]
 
-    tpsas.append(properties["TPSA"])
-    xlogps.append(properties["XLogP"])
+    if "TPSA" in properties and "XLogP" in properties:
 
-print("Compound\tTPSA\tXLogP")
+        valid_compounds.append(compound)
 
-for compound, tpsa, xlogp in zip(compounds, tpsas, xlogps):
+        tpsas.append(properties["TPSA"])
 
-    print(compound, "\t", tpsa, "\t", xlogp)
+        xlogps.append(properties["XLogP"])
+
+    else:
+
+        print("Skipping:", compound)
+
+print("Number of compounds plotted:", len(valid_compounds))
+
+plt.figure(figsize=(12, 8))
 
 plt.scatter(tpsas, xlogps)
 
-for compound, tpsa, xlogp in zip(compounds, tpsas, xlogps):
+for number in range(len(valid_compounds)):
 
     plt.text(
-        tpsa + 1,
-        xlogp + 0.1,
-        compound
+        tpsas[number] + 1,
+        xlogps[number] + 0.1,
+        valid_compounds[number]
     )
+
+plt.xlim(min(tpsas) - 5, max(tpsas) + 15)
+plt.ylim(min(xlogps) - 1, max(xlogps) + 1)
 
 plt.xlabel("TPSA")
 plt.ylabel("XLogP")
