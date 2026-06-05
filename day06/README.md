@@ -1,1 +1,1 @@
-Used ChatGPT : prompt - I want to download info about amphiphiles and compare it in a plot. added pubchem_lipids.py to download info from pubchem and create plot.
+Used ChatGPT :I asked what how I can create a plot and label the different properties of amphiphiles downloaded from pubchem. It provided me with a program that seemed too elaborate and I kept amending it to a program I can mostly comprehend at this stage. 
