@@ -7,21 +7,17 @@ compounds = [
     "dodecanol",
     "tetradecanol",
     "cetyl alcohol",
-
     "octylamine",
     "decylamine",
     "dodecylamine",
     "tetradecylamine",
     "cetylamine",
-
     "octanoic acid",
     "decanoic acid",
     "dodecanoic acid",
     "tetradecanoic acid",
-
     "oleyl alcohol",
     "oleylamine",
-
     "sodium dodecyl sulfate",
 
 ]
