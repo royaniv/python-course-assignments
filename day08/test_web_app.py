@@ -11,8 +11,21 @@ def test_home_page_loads():
 
     assert response.status_code == 200
     assert "PubChem Amphiphile App" in response.text
-    assert "compound-suggestions" in response.text
-    assert "datalist" in response.text
+    assert 'name="selected_compounds"' in response.text
+    assert 'name="compound_text"' in response.text
+
+
+def test_api_suggestions_uses_pubchem(monkeypatch):
+    def fake_get(url, timeout=10):
+        assert "autocomplete/compound/etha" in url
+        return type("Resp", (), {"json": lambda self: {"dictionary_terms": {"compound": ["ethanol"]}}, "raise_for_status": lambda self: None})()
+
+    monkeypatch.setattr(web_app, "get_pubchem_suggestions", lambda query: ["ethanol"])
+
+    response = client.get("/api/suggestions", params={"query": "etha"})
+
+    assert response.status_code == 200
+    assert response.json() == ["ethanol"]
 
 
 def test_api_compounds_uses_business_logic(monkeypatch):

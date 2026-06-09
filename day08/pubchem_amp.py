@@ -1,10 +1,11 @@
 import matplotlib.pyplot as plt
 
-from compound_logic import DEFAULT_COMPOUNDS, get_many_compounds
+from compound_logic import get_many_compounds, load_compound_list
 
 
 def main():
-    found_compounds, skipped_compounds = get_many_compounds(DEFAULT_COMPOUNDS)
+    compounds = load_compound_list()
+    found_compounds, skipped_compounds = get_many_compounds(compounds)
 
     for compound in skipped_compounds:
         print("Skipping:", compound)
@@ -32,8 +33,8 @@ def main():
             compound["name"],
         )
 
-    plt.xlabel("TPSA")
-    plt.ylabel("XLogP")
+    plt.xlabel("TPSA (topological polar surface area)")
+    plt.ylabel("XLogP (octanol-water partition coefficient)")
     plt.title("Amphiphiles from PubChem")
     plt.show()
 

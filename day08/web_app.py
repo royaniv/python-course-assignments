@@ -9,7 +9,7 @@ matplotlib.use("Agg")
 from fastapi import FastAPI, Query
 from fastapi.responses import HTMLResponse, StreamingResponse
 
-from compound_logic import DEFAULT_COMPOUNDS, get_compound_names, get_many_compounds
+from compound_logic import DEFAULT_COMPOUNDS, get_compound_names, get_many_compounds, load_compound_list
 
 
 app = FastAPI()
@@ -58,8 +58,8 @@ def make_plot_png(selected_compounds=None, compound_text=None):
                 fontsize=8,
             )
 
-        axis.set_xlabel("TPSA")
-        axis.set_ylabel("XLogP")
+        axis.set_xlabel("TPSA (topological polar surface area)")
+        axis.set_ylabel("XLogP (octanol-water partition coefficient)")
         axis.set_title("Amphiphile properties")
     else:
         axis.text(
@@ -88,12 +88,17 @@ def make_page(
     skipped_compounds=None,
 ):
     if selected_compounds is None:
-        selected_compounds = DEFAULT_COMPOUNDS
+        selected_compounds = load_compound_list()
 
-    datalist_options = "".join(
-        f'<option value="{escape(compound, quote=True)}"></option>'
-        for compound in DEFAULT_COMPOUNDS
-    )
+    selected_names = set(selected_compounds)
+    compound_options = ""
+
+    for compound in load_compound_list():
+        checked = " selected" if compound in selected_names else ""
+        compound_options += (
+            f'<option value="{escape(compound, quote=True)}"{checked}>'
+            f"{escape(compound)}</option>"
+        )
 
     result_html = ""
     plot_html = ""
@@ -189,18 +194,17 @@ def make_page(
         <form method="get">
             <input type="hidden" name="submitted" value="yes">
 
-            <p>Type or choose compounds from the long dropdown list:</p>
-            <input
-                type="text"
+            <p>Choose several compounds from the dropdown list (hold Ctrl/Cmd to select more than one):</p>
+            <select name="selected_compounds" multiple size="8" style="width: 100%; padding: 6px; box-sizing: border-box;">
+                {compound_options}
+            </select>
+
+            <p>Or type any other PubChem compound names here (one per line or comma separated):</p>
+            <textarea
                 name="compound_text"
-                value="{escape(compound_text)}"
-                list="compound-suggestions"
-                placeholder="octanol, decanol, oleic acid"
-                style="width: 100%; padding: 8px; box-sizing: border-box;"
-            >
-            <datalist id="compound-suggestions">
-                {datalist_options}
-            </datalist>
+                placeholder="octanol\ndecanol\noleic acid"
+                style="width: 100%; height: 100px; box-sizing: border-box;"
+            >{escape(compound_text)}</textarea>
             <br>
             <button type="submit">Look up compounds</button>
         </form>

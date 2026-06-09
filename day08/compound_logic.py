@@ -1,3 +1,4 @@
+from pathlib import Path
 from urllib.parse import quote
 
 import requests
@@ -21,12 +22,55 @@ DEFAULT_COMPOUNDS = [
     "oleyl alcohol",
     "oleylamine",
     "sodium dodecyl sulfate",
+    "hexadecanol",
+    "octadecylamine",
+    "hexadecylamine",
+    "stearyl alcohol",
+    "myristyl alcohol",
+    "lauryl alcohol",
+    "sodium laurate",
+    "sodium myristate",
+    "sodium palmitate",
+    "sodium stearate",
+    "dodecyltrimethylammonium bromide",
+    "cetyltrimethylammonium bromide",
+    "benzalkonium chloride",
+    "sodium dodecylbenzene sulfonate",
+    "polyoxyethylene sorbitan monolaurate",
+    "polyoxyethylene sorbitan monooleate",
+    "tween 20",
+    "tween 80",
+    "span 20",
+    "span 80",
+    "glycol distearate",
+    "sorbitan monostearate",
+    "sorbitan monooleate",
+    "octyl glucoside",
+    "decyl glucoside",
+    "lauryl glucoside",
+    "coco glucoside",
+    "cetyl glucoside",
+    "sodium cocoamphoacetate",
+    "sodium lauroyl sarcosinate",
 ]
+
+
+def load_compound_list(path="compound_list.txt"):
+    file_path = Path(__file__).with_name(path)
+
+    if file_path.exists():
+        with file_path.open("r", encoding="utf-8") as handle:
+            names = [line.strip() for line in handle if line.strip()]
+
+        if names:
+            return names
+
+    return DEFAULT_COMPOUNDS
 
 
 def get_compound_names(text):
     if text is None or text.strip() == "":
-        return DEFAULT_COMPOUNDS
+        return load_compound_list()
 
     text = text.replace(",", "\n")
     names = []
