@@ -68,6 +68,48 @@ def test_web_page_shows_results(monkeypatch):
     assert "octanol" in response.text
 
 
+def test_web_page_includes_plot_link(monkeypatch):
+    def fake_get_many_compounds(compound_names):
+        return (
+            [
+                {
+                    "name": "octanol",
+                    "tpsa": 20.2,
+                    "xlogp": 2.9,
+                }
+            ],
+            [],
+        )
+
+    monkeypatch.setattr(web_app, "get_many_compounds", fake_get_many_compounds)
+
+    response = client.get("/", params={"compound_text": "octanol"})
+
+    assert response.status_code == 200
+    assert 'src="/plot?compound_text=octanol"' in response.text
+
+
+def test_plot_endpoint_returns_png(monkeypatch):
+    def fake_get_many_compounds(compound_names):
+        return (
+            [
+                {
+                    "name": "octanol",
+                    "tpsa": 20.2,
+                    "xlogp": 2.9,
+                }
+            ],
+            [],
+        )
+
+    monkeypatch.setattr(web_app, "get_many_compounds", fake_get_many_compounds)
+
+    response = client.get("/plot", params={"compound_text": "octanol"})
+
+    assert response.status_code == 200
+    assert response.headers["content-type"].startswith("image/png")
+
+
 def test_web_page_uses_selected_and_extra_compounds(monkeypatch):
     def fake_get_many_compounds(compound_names):
         assert compound_names == ["octanol", "decanol", "oleic acid"]

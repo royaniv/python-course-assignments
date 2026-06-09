@@ -1,7 +1,13 @@
 from html import escape
+from io import BytesIO
+from urllib.parse import urlencode
+
+import matplotlib
+
+matplotlib.use("Agg")
 
 from fastapi import FastAPI, Query
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, StreamingResponse
 
 from compound_logic import DEFAULT_COMPOUNDS, get_compound_names, get_many_compounds
 
@@ -27,6 +33,43 @@ def get_web_compound_names(selected_compounds=None, compound_text=None):
             unique_names.append(name)
 
     return unique_names
+
+
+def make_plot_png(selected_compounds=None, compound_text=None):
+    compound_names = get_web_compound_names(selected_compounds, compound_text)
+    found_compounds, _skipped_compounds = get_many_compounds(compound_names)
+
+    if not found_compounds:
+        return None
+
+    import matplotlib.pyplot as plt
+
+    figure, axis = plt.subplots(figsize=(6, 4))
+
+    tpsas = [compound["tpsa"] for compound in found_compounds]
+    xlogps = [compound["xlogp"] for compound in found_compounds]
+
+    axis.scatter(tpsas, xlogps, color="royalblue")
+
+    for compound in found_compounds:
+        axis.annotate(
+            compound["name"],
+            (compound["tpsa"], compound["xlogp"]),
+            xytext=(5, 5),
+            textcoords="offset points",
+            fontsize=8,
+        )
+
+    axis.set_xlabel("TPSA")
+    axis.set_ylabel("XLogP")
+    axis.set_title("Amphiphile properties")
+    figure.tight_layout()
+
+    buffer = BytesIO()
+    figure.savefig(buffer, format="png")
+    plt.close(figure)
+
+    return buffer.getvalue()
 
 
 def make_page(
@@ -60,8 +103,17 @@ def make_page(
         """
 
     result_html = ""
+    plot_html = ""
 
     if found_compounds is not None:
+        plot_params = urlencode(
+            {
+                "compound_text": compound_text,
+                "selected_compounds": selected_compounds,
+            },
+            doseq=True,
+        )
+        plot_html = f'<h2>Plot</h2><img src="/plot?{plot_params}" alt="Plot of amphiphile properties" style="max-width: 100%;">'
         rows = ""
 
         for compound in found_compounds:
@@ -155,6 +207,7 @@ def make_page(
         </form>
 
         {result_html}
+        {plot_html}
     </body>
     </html>
     """
@@ -176,6 +229,19 @@ def home(
     found_compounds, skipped_compounds = get_many_compounds(compound_names)
 
     return make_page(compound_text or "", selected_compounds, found_compounds, skipped_compounds)
+
+
+@app.get("/plot")
+def plot(compound_text=None, selected_compounds: list[str] | None = Query(default=None)):
+    if selected_compounds is None:
+        selected_compounds = []
+
+    plot_bytes = make_plot_png(selected_compounds, compound_text)
+
+    if plot_bytes is None:
+        return HTMLResponse("No compounds to plot.", status_code=404)
+
+    return StreamingResponse(iter([plot_bytes]), media_type="image/png")
 
 
 @app.get("/api/compounds")
