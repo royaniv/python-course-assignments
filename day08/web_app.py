@@ -1,4 +1,6 @@
-from fastapi import FastAPI
+from html import escape
+
+from fastapi import FastAPI, Query
 from fastapi.responses import HTMLResponse
 
 from compound_logic import DEFAULT_COMPOUNDS, get_compound_names, get_many_compounds
@@ -7,9 +9,55 @@ from compound_logic import DEFAULT_COMPOUNDS, get_compound_names, get_many_compo
 app = FastAPI()
 
 
-def make_page(compound_text=None, found_compounds=None, skipped_compounds=None):
-    if compound_text is None:
-        compound_text = "\n".join(DEFAULT_COMPOUNDS)
+def get_web_compound_names(selected_compounds=None, compound_text=None):
+    names = []
+
+    if selected_compounds is not None:
+        names.extend(selected_compounds)
+
+    if compound_text is not None and compound_text.strip() != "":
+        names.extend(get_compound_names(compound_text))
+
+    unique_names = []
+
+    for name in names:
+        name = name.strip()
+
+        if name != "" and name not in unique_names:
+            unique_names.append(name)
+
+    return unique_names
+
+
+def make_page(
+    compound_text="",
+    selected_compounds=None,
+    found_compounds=None,
+    skipped_compounds=None,
+):
+    if selected_compounds is None:
+        selected_compounds = DEFAULT_COMPOUNDS
+
+    selected_names = set(selected_compounds)
+    checkbox_html = ""
+
+    for compound in DEFAULT_COMPOUNDS:
+        checked = ""
+
+        if compound in selected_names:
+            checked = " checked"
+
+        checkbox_html += f"""
+        <label class="compound-option">
+            <input
+                type="checkbox"
+                name="selected_compounds"
+                value="{escape(compound, quote=True)}"
+                {checked}
+            >
+            <span>{escape(compound)}</span>
+        </label>
+        """
 
     result_html = ""
 
@@ -19,13 +67,13 @@ def make_page(compound_text=None, found_compounds=None, skipped_compounds=None):
         for compound in found_compounds:
             rows += f"""
             <tr>
-                <td>{compound["name"]}</td>
+                <td>{escape(compound["name"])}</td>
                 <td>{compound["tpsa"]}</td>
                 <td>{compound["xlogp"]}</td>
             </tr>
             """
 
-        skipped_text = ", ".join(skipped_compounds)
+        skipped_text = escape(", ".join(skipped_compounds))
 
         result_html = f"""
         <h2>Results</h2>
@@ -53,9 +101,22 @@ def make_page(compound_text=None, found_compounds=None, skipped_compounds=None):
                 max-width: 800px;
             }}
 
+            .compound-list {{
+                display: grid;
+                gap: 8px;
+                grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+                margin-bottom: 20px;
+            }}
+
+            .compound-option {{
+                align-items: center;
+                display: flex;
+                gap: 8px;
+            }}
+
             textarea {{
                 width: 100%;
-                height: 220px;
+                height: 120px;
             }}
 
             button {{
@@ -80,8 +141,15 @@ def make_page(compound_text=None, found_compounds=None, skipped_compounds=None):
         <h1>PubChem Amphiphile App</h1>
 
         <form method="get">
-            <p>Enter compound names, one per line:</p>
-            <textarea name="compound_text">{compound_text}</textarea>
+            <input type="hidden" name="submitted" value="yes">
+
+            <p>Choose compounds from the starter list:</p>
+            <div class="compound-list">
+                {checkbox_html}
+            </div>
+
+            <p>Add other compound names, one per line:</p>
+            <textarea name="compound_text">{escape(compound_text)}</textarea>
             <br>
             <button type="submit">Look up compounds</button>
         </form>
@@ -93,14 +161,21 @@ def make_page(compound_text=None, found_compounds=None, skipped_compounds=None):
 
 
 @app.get("/", response_class=HTMLResponse)
-def home(compound_text=None):
-    if compound_text is None:
+def home(
+    compound_text=None,
+    selected_compounds: list[str] | None = Query(default=None),
+    submitted=None,
+):
+    if compound_text is None and selected_compounds is None and submitted is None:
         return make_page()
 
-    compound_names = get_compound_names(compound_text)
+    if selected_compounds is None:
+        selected_compounds = []
+
+    compound_names = get_web_compound_names(selected_compounds, compound_text)
     found_compounds, skipped_compounds = get_many_compounds(compound_names)
 
-    return make_page(compound_text, found_compounds, skipped_compounds)
+    return make_page(compound_text or "", selected_compounds, found_compounds, skipped_compounds)
 
 
 @app.get("/api/compounds")
@@ -112,3 +187,9 @@ def api_compounds(names=None):
         "found": found_compounds,
         "skipped": skipped_compounds,
     }
+
+
+if __name__ == "__main__":
+    import uvicorn
+
+    uvicorn.run(app, host="127.0.0.1", port=8000)
