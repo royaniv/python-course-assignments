@@ -39,30 +39,39 @@ def make_plot_png(selected_compounds=None, compound_text=None):
     compound_names = get_web_compound_names(selected_compounds, compound_text)
     found_compounds, _skipped_compounds = get_many_compounds(compound_names)
 
-    if not found_compounds:
-        return None
-
     import matplotlib.pyplot as plt
 
     figure, axis = plt.subplots(figsize=(6, 4))
 
-    tpsas = [compound["tpsa"] for compound in found_compounds]
-    xlogps = [compound["xlogp"] for compound in found_compounds]
+    if found_compounds:
+        tpsas = [compound["tpsa"] for compound in found_compounds]
+        xlogps = [compound["xlogp"] for compound in found_compounds]
 
-    axis.scatter(tpsas, xlogps, color="royalblue")
+        axis.scatter(tpsas, xlogps, color="royalblue")
 
-    for compound in found_compounds:
-        axis.annotate(
-            compound["name"],
-            (compound["tpsa"], compound["xlogp"]),
-            xytext=(5, 5),
-            textcoords="offset points",
-            fontsize=8,
+        for compound in found_compounds:
+            axis.annotate(
+                compound["name"],
+                (compound["tpsa"], compound["xlogp"]),
+                xytext=(5, 5),
+                textcoords="offset points",
+                fontsize=8,
+            )
+
+        axis.set_xlabel("TPSA")
+        axis.set_ylabel("XLogP")
+        axis.set_title("Amphiphile properties")
+    else:
+        axis.text(
+            0.5,
+            0.5,
+            "No compounds found yet\nTry the search form",
+            ha="center",
+            va="center",
+            fontsize=10,
         )
+        axis.set_axis_off()
 
-    axis.set_xlabel("TPSA")
-    axis.set_ylabel("XLogP")
-    axis.set_title("Amphiphile properties")
     figure.tight_layout()
 
     buffer = BytesIO()
@@ -105,15 +114,16 @@ def make_page(
     result_html = ""
     plot_html = ""
 
+    plot_params = urlencode(
+        {
+            "compound_text": compound_text,
+            "selected_compounds": selected_compounds,
+        },
+        doseq=True,
+    )
+    plot_html = f'<h2>Plot</h2><img src="/plot?{plot_params}" alt="Plot of amphiphile properties" style="max-width: 100%;">'
+
     if found_compounds is not None:
-        plot_params = urlencode(
-            {
-                "compound_text": compound_text,
-                "selected_compounds": selected_compounds,
-            },
-            doseq=True,
-        )
-        plot_html = f'<h2>Plot</h2><img src="/plot?{plot_params}" alt="Plot of amphiphile properties" style="max-width: 100%;">'
         rows = ""
 
         for compound in found_compounds:
@@ -237,9 +247,6 @@ def plot(compound_text=None, selected_compounds: list[str] | None = Query(defaul
         selected_compounds = []
 
     plot_bytes = make_plot_png(selected_compounds, compound_text)
-
-    if plot_bytes is None:
-        return HTMLResponse("No compounds to plot.", status_code=404)
 
     return StreamingResponse(iter([plot_bytes]), media_type="image/png")
 
