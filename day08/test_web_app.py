@@ -11,7 +11,8 @@ def test_home_page_loads():
 
     assert response.status_code == 200
     assert "PubChem Amphiphile App" in response.text
-    assert "textarea" in response.text
+    assert "compound-suggestions" in response.text
+    assert "datalist" in response.text
 
 
 def test_api_compounds_uses_business_logic(monkeypatch):

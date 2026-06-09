@@ -90,26 +90,10 @@ def make_page(
     if selected_compounds is None:
         selected_compounds = DEFAULT_COMPOUNDS
 
-    selected_names = set(selected_compounds)
-    checkbox_html = ""
-
-    for compound in DEFAULT_COMPOUNDS:
-        checked = ""
-
-        if compound in selected_names:
-            checked = " checked"
-
-        checkbox_html += f"""
-        <label class="compound-option">
-            <input
-                type="checkbox"
-                name="selected_compounds"
-                value="{escape(compound, quote=True)}"
-                {checked}
-            >
-            <span>{escape(compound)}</span>
-        </label>
-        """
+    datalist_options = "".join(
+        f'<option value="{escape(compound, quote=True)}"></option>'
+        for compound in DEFAULT_COMPOUNDS
+    )
 
     result_html = ""
     plot_html = ""
@@ -205,13 +189,18 @@ def make_page(
         <form method="get">
             <input type="hidden" name="submitted" value="yes">
 
-            <p>Choose compounds from the starter list:</p>
-            <div class="compound-list">
-                {checkbox_html}
-            </div>
-
-            <p>Add other compound names, one per line:</p>
-            <textarea name="compound_text">{escape(compound_text)}</textarea>
+            <p>Type or choose compounds from the long dropdown list:</p>
+            <input
+                type="text"
+                name="compound_text"
+                value="{escape(compound_text)}"
+                list="compound-suggestions"
+                placeholder="octanol, decanol, oleic acid"
+                style="width: 100%; padding: 8px; box-sizing: border-box;"
+            >
+            <datalist id="compound-suggestions">
+                {datalist_options}
+            </datalist>
             <br>
             <button type="submit">Look up compounds</button>
         </form>
