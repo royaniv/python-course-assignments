@@ -2,197 +2,91 @@
 
 This project is based on the day 6 PubChem amphiphile program.
 
-The first version used FastAPI and uvicorn, but that felt too advanced for this stage of the course. This version keeps the assignment valid but uses simpler Python.
+The goal is to keep the assignment valid while using simple Python that is easy
+to follow. The web app uses Python's built-in `http.server`, not FastAPI, Flask,
+uvicorn, or httpx.
 
 ## What The Programs Do
 
-There are two runnable programs in this folder:
+The programs look up amphiphile compounds in PubChem.
 
-- `web_app.py` - the main web app. This is the one to run if you want the browser page.
-- `pubchem_amp.py` - the simpler plot-only script. This is the one to run if you only want the matplotlib plot.
-
-Both programs look up amphiphile compounds in PubChem.
-
-For each compound, it tries to get:
+For each compound, the code tries to get:
 
 - `TPSA` - topological polar surface area
 - `XLogP` - octanol-water partition coefficient
 
-If PubChem has both values, the compound is used.
+If PubChem has both values, the compound is used. If one value is missing, the
+compound is skipped.
 
-If one of the values is missing, the compound is skipped.
+The results are shown as a table and as a plot of TPSA against XLogP.
 
 ## Files
 
-- `CODE_EXPLANATION.md` - a longer explanation of the code structure.
-- `compound_list.txt` - amphiphile names shown in the dropdown menu.
-- `compound_logic.py` - shared business logic for loading names and getting
-  PubChem data.
-- `pubchem_amp.py` - a simple script that makes a matplotlib plot.
-- `requirements.txt` - the packages needed for this day.
-- `styles.css` - the web page styling.
+- `web_app.py` - the main web app. Run this file to use the browser page.
+- `pubchem_amp.py` - a simpler plot-only script.
+- `compound_logic.py` - shared business logic used by both programs.
+- `compound_list.txt` - example amphiphile names for the dropdown menu.
+- `styles.css` - styling for the web page.
+- `requirements.txt` - Python packages needed for this project.
 - `test_pubchem_amp.py` - tests for the business logic.
 - `test_web_app.py` - tests for the web page functions.
-- `web_app.py` - a small web page using Python's built-in `http.server`.
+- `CODE_EXPLANATION.md` - a longer explanation of the code.
 
-The files needed to run the web app are:
-
-- `web_app.py`
-- `compound_logic.py`
-- `compound_list.txt`
-- `styles.css`
-
-The test and explanation files are useful for the assignment, but they are not
-needed just to open the web app.
-
-## Which File Do I Run?
-
-To use the web app, run:
-
-```bash
-python web_app.py
-```
-
-Then open:
-
-```text
-http://127.0.0.1:8000
-```
-
-To use only the plot script, run:
-
-```bash
-python pubchem_amp.py
-```
-
-You do not run these files directly:
-
-- `compound_logic.py` - imported by the two runnable programs.
-- `styles.css` - loaded by the web page.
-- `test_pubchem_amp.py` and `test_web_app.py` - run with `python -m pytest`.
-- `compound_list.txt` - read by the Python code.
-- `README.md` and `CODE_EXPLANATION.md` - documentation.
-
-## Why This Is Simpler
-
-The web app does not use FastAPI, Flask, uvicorn, or httpx.
-
-It only uses Python's built-in web server:
-
-```python
-from http.server import BaseHTTPRequestHandler, HTTPServer
-```
-
-The web page lets the user:
-
-- choose example amphiphiles from a dropdown menu built from `compound_list.txt`
-- type other PubChem compound names that are not in the dropdown
-- see a table with TPSA and XLogP values
-- see a simple plot of TPSA against XLogP
-
-The separate plot script is still available in `pubchem_amp.py`, like in day 6.
-
-The web application keeps one main separation:
-
-- `compound_logic.py` handles compound names and PubChem data.
-- `web_app.py` handles the browser page and web server.
-
-The CSS is in `styles.css` so the Python file does not also contain a long style
-section.
+You do not run `compound_logic.py`, `styles.css`, `compound_list.txt`, the test
+files, or the documentation files directly.
 
 ## Setup
 
-From the `day08` folder:
+Open a terminal in the `day08` folder and install the needed packages:
 
-```bash
+```text
 python -m pip install -r requirements.txt
 ```
 
-## Run The Plot Version
+You only need to do this setup step when the packages are not installed yet.
 
-```bash
-python pubchem_amp.py
-```
+## Run The Web App
 
-## Run The Web Page
+From the `day08` folder, run:
 
-```bash
+```text
 python web_app.py
 ```
 
-Then open:
+Then open this address in a browser:
 
 ```text
 http://127.0.0.1:8000
+```
+
+The web page lets you choose compounds from the list and also type other PubChem
+compound names.
+
+## Run The Plot-Only Script
+
+If you only want the matplotlib plot and not the web page, run:
+
+```text
+python pubchem_amp.py
 ```
 
 ## Run The Tests
 
-```bash
+From the `day08` folder, run:
+
+```text
 python -m pytest
 ```
 
 The tests use fake PubChem data, so they do not need the internet.
 
-## Prompts
+## Code Structure
 
-### Prompt 1
+The project keeps one main separation:
 
-Please create the following in the day8 folder and take the files from day 6
-folder. Do not change anything in the day 6 folder.
+- `compound_logic.py` handles compound names and PubChem data.
+- `web_app.py` handles the browser page and web server.
+- `pubchem_amp.py` handles the plot-only version.
 
-Make sure it has a "business logic" part that is tested.
-
-Write a web application for it. You can use Flask but it would be nicer if you
-used one of the other web frameworks of Python.
-
-Make sure they use the same "business logic" functions.
-
-Write some tests for the web application as well.
-
-Include your prompts as well.
-
-### Prompt 2
-
-Use the day 6 PubChem amphiphile script as the starting point, but refactor the
-day 8 copy so the PubChem lookup and data extraction live in importable business
-logic functions. Then make both the plotting script and the web application call
-those same functions.
-
-### Prompt 3
-
-Add pytest tests that avoid real PubChem network calls by using fake response
-objects. Test the business logic directly and test the web API with an injected
-fake lookup function.
-
-### Prompt 4
-
-This seems way too elaborate for the stage of the course I am at. Can it be much
-simpler so I can comprehend what is going on?
-
-### Prompt 5
-
-i dont know what sandbox is. also the app should allow to chose any kind of
-amphiphile and not just these ones no? or at least able to choose from the list
-of compounds
-
-### Prompt 6
-
-promppts should appear in the readme file not standalone
-
-### Prompt 7
-
-all of this sounds too elaborate for a day 8 assignment no?
-
-### Prompt 8
-
-so i would like you to look at day1-7 and see if you can create something much
-simpler for day 8 but keeping the requested assignemnet valid
-
-### Prompt 9
-
-where is the plot that i asked for i dont see it being created?
-
-### Prompt 10
-
-arent there too many subfucntions and things in day 8 can it not be minmized?
+This way, the same business logic is reused by the web app, the plot script, and
+the tests.
