@@ -2,13 +2,16 @@
 
 This project is based on the day 6 PubChem amphiphile program.
 
-I wanted this version to be simpler than the first day 8 version. The first
-version used FastAPI and uvicorn, but that felt too advanced for this stage of
-the course. This version keeps the assignment valid but uses simpler Python.
+I wanted this version to be simpler than the first day 8 version. The first version used FastAPI and uvicorn, but that felt too advanced for this stage of the course. This version keeps the assignment valid but uses simpler Python.
 
-## What The Program Does
+## What The Programs Do
 
-The program looks up amphiphile compounds in PubChem.
+There are two runnable programs in this folder:
+
+- `web_app.py` - the main web app. This is the one to run if you want the browser page.
+- `pubchem_amp.py` - the simpler plot-only script. This is the one to run if you only want the matplotlib plot.
+
+Both programs look up amphiphile compounds in PubChem.
 
 For each compound, it tries to get:
 
@@ -21,14 +24,54 @@ If one of the values is missing, the compound is skipped.
 
 ## Files
 
+- `CODE_EXPLANATION.md` - a longer explanation of the code structure.
+- `compound_list.txt` - amphiphile names shown in the dropdown menu.
 - `compound_logic.py` - shared business logic for loading names and getting
   PubChem data.
-- `compound_list.txt` - amphiphile names shown in the dropdown menu.
 - `pubchem_amp.py` - a simple script that makes a matplotlib plot.
-- `web_app.py` - a small web page using Python's built-in `http.server`.
+- `requirements.txt` - the packages needed for this day.
+- `styles.css` - the web page styling.
 - `test_pubchem_amp.py` - tests for the business logic.
 - `test_web_app.py` - tests for the web page functions.
-- `requirements.txt` - the packages needed for this day.
+- `web_app.py` - a small web page using Python's built-in `http.server`.
+
+The files needed to run the web app are:
+
+- `web_app.py`
+- `compound_logic.py`
+- `compound_list.txt`
+- `styles.css`
+
+The test and explanation files are useful for the assignment, but they are not
+needed just to open the web app.
+
+## Which File Do I Run?
+
+To use the web app, run:
+
+```bash
+python web_app.py
+```
+
+Then open:
+
+```text
+http://127.0.0.1:8000
+```
+
+To use only the plot script, run:
+
+```bash
+python pubchem_amp.py
+```
+
+You do not run these files directly:
+
+- `compound_logic.py` - imported by the two runnable programs.
+- `styles.css` - loaded by the web page.
+- `test_pubchem_amp.py` and `test_web_app.py` - run with `python -m pytest`.
+- `compound_list.txt` - read by the Python code.
+- `README.md` and `CODE_EXPLANATION.md` - documentation.
 
 ## Why This Is Simpler
 
@@ -45,9 +88,17 @@ The web page lets the user:
 - choose example amphiphiles from a dropdown menu built from `compound_list.txt`
 - type other PubChem compound names that are not in the dropdown
 - see a table with TPSA and XLogP values
-- see a plot of TPSA against XLogP
+- see a simple plot of TPSA against XLogP
 
 The separate plot script is still available in `pubchem_amp.py`, like in day 6.
+
+The web application keeps one main separation:
+
+- `compound_logic.py` handles compound names and PubChem data.
+- `web_app.py` handles the browser page and web server.
+
+The CSS is in `styles.css` so the Python file does not also contain a long style
+section.
 
 ## Setup
 
@@ -141,3 +192,7 @@ simpler for day 8 but keeping the requested assignemnet valid
 ### Prompt 9
 
 where is the plot that i asked for i dont see it being created?
+
+### Prompt 10
+
+arent there too many subfucntions and things in day 8 can it not be minmized?

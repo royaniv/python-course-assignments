@@ -1,8 +1,9 @@
 import web_app
+from compound_logic import choose_compound_names
 
 
 def test_choose_compound_names_combines_list_and_text():
-    names = web_app.choose_compound_names(
+    names = choose_compound_names(
         ["octanol", "decanol"],
         "oleic acid, octanol",
     )

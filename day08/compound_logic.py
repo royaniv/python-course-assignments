@@ -33,6 +33,27 @@ def get_compound_names(text):
     return names
 
 
+def choose_compound_names(selected_compounds=None, compound_text=""):
+    names = []
+
+    if selected_compounds is not None:
+        for compound in selected_compounds:
+            compound = compound.strip()
+
+            if compound != "":
+                names.append(compound)
+
+    names.extend(get_compound_names(compound_text))
+
+    unique_names = []
+
+    for name in names:
+        if name not in unique_names:
+            unique_names.append(name)
+
+    return unique_names
+
+
 def get_pubchem_data(compound, requests_get=requests.get):
     url = (
         "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/"
