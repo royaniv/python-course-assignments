@@ -1,73 +1,78 @@
-# Day 8 - Simple PubChem Web App
+# Day 8 - Simple PubChem Amphiphile Program
 
 This project is based on the day 6 PubChem amphiphile program.
 
-The day 6 folder was not changed.
+I wanted this version to be simpler than the first day 8 version. The first
+version used FastAPI and uvicorn, but that felt too advanced for this stage of
+the course. This version keeps the assignment valid but uses simpler Python.
 
 ## What The Program Does
 
 The program looks up amphiphile compounds in PubChem.
 
-The web page lets the user choose compounds from a starter list and also type
-other compound names.
-
 For each compound, it tries to get:
 
-- `TPSA`
-- `XLogP`
+- `TPSA` - topological polar surface area
+- `XLogP` - octanol-water partition coefficient
 
-If PubChem has both values, the compound is shown in the results.
+If PubChem has both values, the compound is used.
 
 If one of the values is missing, the compound is skipped.
 
 ## Files
 
-- `compound_logic.py` - the business logic.
-- `pubchem_amp.py` - a script that makes a matplotlib plot.
-- `web_app.py` - the web application.
+- `compound_logic.py` - shared business logic for loading names and getting
+  PubChem data.
+- `compound_list.txt` - amphiphile names shown in the dropdown menu.
+- `pubchem_amp.py` - a simple script that makes a matplotlib plot.
+- `web_app.py` - a small web page using Python's built-in `http.server`.
 - `test_pubchem_amp.py` - tests for the business logic.
-- `test_web_app.py` - tests for the web application.
+- `test_web_app.py` - tests for the web page functions.
+- `requirements.txt` - the packages needed for this day.
+
+## Why This Is Simpler
+
+The web app does not use FastAPI, Flask, uvicorn, or httpx.
+
+It only uses Python's built-in web server:
+
+```python
+from http.server import BaseHTTPRequestHandler, HTTPServer
+```
+
+The web page lets the user:
+
+- choose example amphiphiles from a dropdown menu built from `compound_list.txt`
+- type other PubChem compound names that are not in the dropdown
+- see a table with TPSA and XLogP values
+- see a plot of TPSA against XLogP
+
+The separate plot script is still available in `pubchem_amp.py`, like in day 6.
 
 ## Setup
 
 From the `day08` folder:
 
 ```bash
-python -m venv .venv
-```
-
-```bash
-.\.venv\Scripts\Activate.ps1
-```
-
-```bash
 python -m pip install -r requirements.txt
-```
-
-## Run The Web App
-
-From the `day08` folder:
-
-```bash
-python web_app.py
-```
-
-Or:
-
-```bash
-uvicorn web_app:app --reload
-```
-
-Then open:
-
-```text
-http://127.0.0.1:8000
 ```
 
 ## Run The Plot Version
 
 ```bash
 python pubchem_amp.py
+```
+
+## Run The Web Page
+
+```bash
+python web_app.py
+```
+
+Then open:
+
+```text
+http://127.0.0.1:8000
 ```
 
 ## Run The Tests
@@ -123,3 +128,16 @@ of compounds
 ### Prompt 6
 
 promppts should appear in the readme file not standalone
+
+### Prompt 7
+
+all of this sounds too elaborate for a day 8 assignment no?
+
+### Prompt 8
+
+so i would like you to look at day1-7 and see if you can create something much
+simpler for day 8 but keeping the requested assignemnet valid
+
+### Prompt 9
+
+where is the plot that i asked for i dont see it being created?
