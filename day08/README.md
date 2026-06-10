@@ -2,7 +2,7 @@
 
 This project is based on the day 6 PubChem amphiphile program.
 
-I wanted this version to be simpler than the first day 8 version. The first version used FastAPI and uvicorn, but that felt too advanced for this stage of the course. This version keeps the assignment valid but uses simpler Python.
+The first version used FastAPI and uvicorn, but that felt too advanced for this stage of the course. This version keeps the assignment valid but uses simpler Python.
 
 ## What The Programs Do
 
