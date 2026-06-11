@@ -1,11 +1,22 @@
+from fastapi.testclient import TestClient
+
+import day06.compound_logic as day06_logic
 import web_app
 
 
-def test_home_page_renders_form():
-    page = web_app.make_page()
+client = TestClient(web_app.app)
 
-    assert "PubChem Amphiphile App" in page
-    assert "Choose compounds:" in page
+
+def test_web_app_uses_day06_business_logic():
+    assert web_app.get_many_compounds is day06_logic.get_many_compounds
+
+
+def test_home_page_renders_form():
+    response = client.get("/")
+
+    assert response.status_code == 200
+    assert "PubChem Amphiphile App" in response.text
+    assert "Choose compounds:" in response.text
 
 
 def test_search_page_uses_business_logic_and_shows_results(monkeypatch):
@@ -17,10 +28,16 @@ def test_search_page_uses_business_logic_and_shows_results(monkeypatch):
 
     monkeypatch.setattr(web_app, "get_many_compounds", fake_get_many_compounds)
 
-    page = web_app.make_page_from_query(
-        "submitted=yes&selected_compounds=decanol&compound_text=octanol"
+    response = client.get(
+        "/",
+        params={
+            "submitted": "yes",
+            "selected_compounds": "decanol",
+            "compound_text": "octanol",
+        },
     )
 
     assert calls["names"] == ["decanol", "octanol"]
-    assert "Found 1 compounds." in page
-    assert "octanol" in page
+    assert response.status_code == 200
+    assert "Found 1 compounds." in response.text
+    assert "octanol" in response.text

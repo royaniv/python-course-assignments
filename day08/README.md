@@ -3,8 +3,7 @@
 This project is based on the day 6 PubChem amphiphile program.
 
 The goal is to keep the assignment valid while using simple Python that is easy
-to follow. The web app uses Python's built-in `http.server`, not FastAPI, Flask,
-uvicorn, or httpx.
+to follow. The web app uses the FastAPI web framework.
 
 ## What The Programs Do
 

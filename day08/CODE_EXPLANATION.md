@@ -108,43 +108,22 @@ It returns two lists:
 
 ## `web_app.py`
 
-This file contains the web application.
+This file contains the FastAPI web application.
 
 It imports the business logic from `../day06/compound_logic.py`, then builds a
 simple HTML page using Python strings.
-
-### `make_compound_options`
-
-Builds the dropdown options from the day 6 compound list.
-
-### `make_plot_svg`
-
-Builds a simple SVG scatter plot for the browser.
-
-The x-axis is TPSA. The y-axis is XLogP. The table shows the compound names, so
-the plot only draws points. This keeps the plot less crowded.
-
-### `make_results_html`
-
-Builds the results section after the user submits the form.
-
-It includes:
-
-- the result count
-- a table of compounds
-- skipped compound names
-- the SVG plot
 
 ### `make_page`
 
 Builds the complete HTML page.
 
-It includes the title, form, dropdown, text area, button, and results section.
-The styling is not inside this function; it is in `styles.css`.
+It includes the title, form, dropdown, text area, results table, skipped
+compound names, and the SVG plot from `plot_logic.py`. The styling is not
+inside this function; it is in `styles.css`.
 
-### `make_page_from_query`
+### `home`
 
-Reads the browser query string.
+This is the FastAPI route for `/`.
 
 If the form was submitted, it:
 
@@ -154,14 +133,12 @@ If the form was submitted, it:
 4. calls PubChem through `get_many_compounds`
 5. returns the completed HTML page
 
-### `AmphiphileHandler`
+If the form was not submitted yet, it returns the empty form.
 
-Handles browser requests.
+### `styles`
 
-It serves:
-
-- `/` for the web page
-- `/styles.css` for the CSS file
+This is the FastAPI route for `/styles.css`. It sends the CSS file to the
+browser.
 
 ### `run_server`
 
