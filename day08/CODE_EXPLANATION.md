@@ -4,7 +4,8 @@ This document explains the files in the `day08` folder.
 
 The program is split only where it helps:
 
-- `compound_logic.py` contains the reusable PubChem/data logic.
+- `../day06/compound_logic.py` contains the reusable PubChem/data logic, so day
+  8 uses the exact same business logic as day 6.
 - `web_app.py` contains the browser app.
 - `styles.css` contains the web page styling.
 - `pubchem_amp.py` contains the separate matplotlib plot version.
@@ -23,15 +24,14 @@ There are two files you can run:
 
 The other files support those programs:
 
-- `compound_logic.py` is imported by both programs.
+- `../day06/compound_logic.py` is imported by both programs.
 - `styles.css` is loaded by the web page.
-- `compound_list.txt` supplies the dropdown/list of compounds.
 - the `test_...py` files are run by pytest.
 - `README.md` and `CODE_EXPLANATION.md` are explanations.
 
 So for normal use, the most important command is:
 
-```bash
+```text
 python web_app.py
 ```
 
@@ -41,17 +41,17 @@ Then open:
 http://127.0.0.1:8000
 ```
 
-## `compound_logic.py`
+## `../day06/compound_logic.py`
 
 This is the business logic file. It does not create the web page. It handles
 compound names and PubChem data.
 
 ### `load_compound_list`
 
-Reads compound names from `compound_list.txt`.
+Reads compound names.
 
-If the file exists and has names in it, it returns those names as a list. If the
-file is missing or empty, it returns an empty list.
+It can read from `compound_list.txt` if that file exists in day 6. If not, it
+uses the default compound list inside `compound_logic.py`.
 
 ### `get_compound_names`
 
@@ -110,12 +110,12 @@ It returns two lists:
 
 This file contains the web application.
 
-It imports the business logic from `compound_logic.py`, then builds a simple
-HTML page using Python strings.
+It imports the business logic from `../day06/compound_logic.py`, then builds a
+simple HTML page using Python strings.
 
 ### `make_compound_options`
 
-Builds the dropdown options from `compound_list.txt`.
+Builds the dropdown options from the day 6 compound list.
 
 ### `make_plot_svg`
 
@@ -202,7 +202,7 @@ This is the command-line plot version.
 It uses the same business logic as the web app:
 
 ```python
-from compound_logic import get_many_compounds, load_compound_list
+from day06.compound_logic import get_many_compounds, load_compound_list
 ```
 
 It loads the compound list, gets PubChem data, and shows a matplotlib plot.
@@ -220,6 +220,7 @@ Tests the business logic:
 - handling missing data
 - handling request errors
 - separating found and skipped compounds
+- checking that the day 8 plot program uses the day 6 business logic
 
 ### `test_web_app.py`
 
@@ -229,6 +230,7 @@ Tests the web page functions:
 - the home page has a form
 - the results page shows data
 - the query string creates a results page
+- the web app uses the day 6 business logic
 
 ## Why This Version Is Smaller
 
@@ -237,7 +239,7 @@ organized, but probably too much for this assignment.
 
 This version keeps only one important separation:
 
-- `compound_logic.py` = data/PubChem logic
+- `../day06/compound_logic.py` = data/PubChem logic
 - `web_app.py` = web page and server
 
 That is simpler to explain while still avoiding one very long `main` function.

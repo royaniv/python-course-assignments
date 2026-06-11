@@ -1,5 +1,18 @@
+import sys
+from pathlib import Path
+
 import web_app
-from compound_logic import choose_compound_names
+
+COURSE_ROOT = Path(__file__).resolve().parents[1]
+if str(COURSE_ROOT) not in sys.path:
+    sys.path.insert(0, str(COURSE_ROOT))
+
+import day06.compound_logic as day06_logic
+from day06.compound_logic import choose_compound_names
+
+
+def test_web_app_uses_day06_business_logic():
+    assert web_app.get_many_compounds is day06_logic.get_many_compounds
 
 
 def test_choose_compound_names_combines_list_and_text():

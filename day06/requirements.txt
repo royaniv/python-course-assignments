@@ -1,4 +1,3 @@
- requests
- matplotlib.pyplot
- pandas
- 
+requests
+matplotlib
+pytest

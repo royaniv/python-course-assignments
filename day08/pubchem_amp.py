@@ -1,9 +1,16 @@
-import matplotlib.pyplot as plt
+import sys
+from pathlib import Path
 
-from compound_logic import get_many_compounds, load_compound_list
+COURSE_ROOT = Path(__file__).resolve().parents[1]
+if str(COURSE_ROOT) not in sys.path:
+    sys.path.insert(0, str(COURSE_ROOT))
+
+from day06.compound_logic import get_many_compounds, load_compound_list
 
 
 def main():
+    import matplotlib.pyplot as plt
+
     compounds = load_compound_list()
     found_compounds, skipped_compounds = get_many_compounds(compounds)
 

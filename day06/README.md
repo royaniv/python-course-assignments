@@ -1,29 +1,61 @@
-Program PubChem Amphiphile Analysis
+# Day 6 - PubChem Amphiphile Analysis
 
-I asked ChatGPT to help create a program that would take properties of XlogP and TPSAA for amphiphiles from Pubchem and plot them. During which i had issues with labeling, compounds that didnt have the properties in PubChem and there fore had to ask for some workarounds. I asked ChatGPT to simplify things when the porgram was too difficult for me to comprehend at this stage. 
+This program looks up amphiphile compounds in PubChem and plots two molecular
+properties:
 
-What is PubChem?
+- `TPSA` - topological polar surface area
+- `XLogP` - octanol-water partition coefficient
 
-    PubChem is a public chemical database maintained by the National Center for Biotechnology Information (NCBI). It contains information about millions of chemical compounds, including their molecular structures, physical properties, biological activities, and molecular descriptors. PubChem provides a web API that allows programs to automatically retrieve chemical data.
+## Business Logic
 
-What is XLogP?
+The reusable business logic is in `compound_logic.py`.
 
-    XLogP is an estimated logarithm of the octanol-water partition coefficient (LogP). It measures the tendency of a molecule to partition between an oily phase (octanol) and water.
+That file contains the functions that:
 
-    A high XLogP value indicates that a molecule is more hydrophobic and prefers non-polar environments. A low XLogP value indicates that a molecule is more hydrophilic and interacts more strongly with water.
+- load the compound names
+- look up one compound in PubChem
+- look up many compounds
+- separate found compounds from skipped compounds
 
-What is TPSA?
+The original plot program, `pubchem_amp.py`, uses that business logic instead of
+doing the PubChem lookup directly inside the plotting code.
 
-    TPSA stands for Topological Polar Surface Area. It is a measure of the surface area associated with polar atoms such as oxygen and nitrogen.
+## Files
 
-    Molecules with larger TPSA values generally have a greater ability to interact with water and other polar molecules. TPSA is commonly used to estimate the polarity of a molecule.
+- `compound_logic.py` - business logic for PubChem data.
+- `pubchem_amp.py` - the plotting program.
+- `test_pubchem_amp.py` - tests for the business logic.
+- `requirements.txt` - packages needed for this day.
 
-Why are amphiphiles relevant to GARD and the Lipid World?
+## Run The Program
 
-    Amphiphiles are molecules that contain both a hydrophilic (water-attracting) region and a hydrophobic (water-repelling) region. Because of this dual nature, amphiphiles can spontaneously self-assemble into structures such as micelles and vesicles.
+From the `day06` folder, run:
 
-    The GARD (Graded Autocatalysis Replication Domain) model and the Lipid World hypothesis propose that early life may have emerged from self-organizing molecular assemblies composed of amphiphilic molecules. These assemblies could have stored compositional information and undergone growth and reproduction-like processes before the appearance of nucleic acids.
+```text
+python pubchem_amp.py
+```
 
-    In this project, amphiphilic molecules were retrieved from the PubChem database and compared using the molecular descriptors TPSA and XLogP. These descriptors provide information about the balance between hydrophilic and hydrophobic properties that is central to amphiphilic self-assembly.
+## Run The Tests
 
-   
+From the `day06` folder, run:
+
+```text
+python -m pytest
+```
+
+The tests use fake PubChem data, so they do not need the internet.
+
+## Background
+
+PubChem is a public chemical database maintained by the National Center for
+Biotechnology Information. It contains information about chemical compounds,
+including molecular properties.
+
+XLogP is an estimated logarithm of the octanol-water partition coefficient. It
+helps describe how hydrophobic or hydrophilic a molecule is.
+
+TPSA stands for topological polar surface area. It helps describe the polar
+surface area of a molecule.
+
+Amphiphiles contain both hydrophilic and hydrophobic parts. This makes them
+relevant to self-assembly, GARD, and Lipid World ideas.

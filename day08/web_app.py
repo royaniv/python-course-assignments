@@ -1,9 +1,14 @@
+import sys
 from html import escape
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
-from compound_logic import choose_compound_names, get_many_compounds, load_compound_list
+COURSE_ROOT = Path(__file__).resolve().parents[1]
+if str(COURSE_ROOT) not in sys.path:
+    sys.path.insert(0, str(COURSE_ROOT))
+
+from day06.compound_logic import choose_compound_names, get_many_compounds, load_compound_list
 
 
 STYLE_PATH = Path(__file__).with_name("styles.css")

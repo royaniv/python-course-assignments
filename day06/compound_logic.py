@@ -4,6 +4,27 @@ from urllib.parse import quote
 import requests
 
 
+DEFAULT_COMPOUNDS = [
+    "octanol",
+    "decanol",
+    "dodecanol",
+    "tetradecanol",
+    "cetyl alcohol",
+    "octylamine",
+    "decylamine",
+    "dodecylamine",
+    "tetradecylamine",
+    "cetylamine",
+    "octanoic acid",
+    "decanoic acid",
+    "dodecanoic acid",
+    "tetradecanoic acid",
+    "oleyl alcohol",
+    "oleylamine",
+    "sodium dodecyl sulfate",
+]
+
+
 def load_compound_list(path="compound_list.txt"):
     file_path = Path(__file__).with_name(path)
 
@@ -14,7 +35,7 @@ def load_compound_list(path="compound_list.txt"):
         if names:
             return names
 
-    return []
+    return DEFAULT_COMPOUNDS.copy()
 
 
 def get_compound_names(text):
@@ -80,11 +101,11 @@ def get_pubchem_data(compound, requests_get=requests.get):
     return None
 
 
-def get_many_compounds(compounds, requests_get=requests.get):
+def get_many_compounds(compound_names, requests_get=requests.get):
     found_compounds = []
     skipped_compounds = []
 
-    for compound in compounds:
+    for compound in compound_names:
         result = get_pubchem_data(compound, requests_get)
 
         if result is None:
