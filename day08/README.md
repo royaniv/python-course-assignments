@@ -22,7 +22,7 @@ The results are shown as a table and as a plot of TPSA against XLogP.
 
 ## Files
 
-- `web_app.py` - the main web app. Run this file to use the browser page.
+- `simple_web_app.py` - the main beginner-friendly web app. Run this file to use the browser page.
 - `pubchem_amp.py` - a simpler plot-only script.
 - `../day06/compound_logic.py` - the exact business logic used by day 6 and day
   8.
@@ -50,7 +50,7 @@ You only need to do this setup step when the packages are not installed yet.
 From the `day08` folder, run:
 
 ```text
-python web_app.py
+python simple_web_app.py
 ```
 
 Then open this address in a browser:
@@ -85,7 +85,7 @@ The tests use fake PubChem data, so they do not need the internet.
 The project keeps one main separation:
 
 - `../day06/compound_logic.py` handles compound names and PubChem data.
-- `web_app.py` handles the browser page and web server.
+- `simple_web_app.py` handles the browser page and web server.
 - `pubchem_amp.py` handles the plot-only version.
 
 Day 8 does not have its own copy of the business logic. Both runnable day 8

@@ -1,7 +1,7 @@
 import sys
 from pathlib import Path
 
-import web_app
+import simple_web_app as web_app
 
 COURSE_ROOT = Path(__file__).resolve().parents[1]
 if str(COURSE_ROOT) not in sys.path:
