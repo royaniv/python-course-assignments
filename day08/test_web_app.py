@@ -20,6 +20,7 @@ def test_home_page_renders_form():
 
 
 def test_search_page_uses_business_logic_and_shows_results(monkeypatch):
+    
     calls = {}
 
     def fake_get_many_compounds(names):
