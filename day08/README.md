@@ -91,7 +91,7 @@ The business logic matches day 6 because `compound_logic.py` was copied from the
 ## Prompts
 
 
-Please copy day 6 and create a web application using a web framework for it in the day8 folder and take the files from day 6 folder. Do not change anything in the day 6 folder.
+Please copy day 6 and suggest a web application using a web framework for it in the day8 folder and take the files from day 6 folder. Do not change anything in the day 6 folder.
 
 Make sure it has a "business logic" part that is tested.
 
