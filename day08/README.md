@@ -30,7 +30,6 @@ The results are shown as a table and as a plot of TPSA against XLogP.
 - `requirements.txt` - Python packages needed for this project.
 - `test_pubchem_amp.py` - tests for the business logic.
 - `test_web_app.py` - tests for the web page functions.
-- `CODE_EXPLANATION.md` - a longer explanation of the code.
 
 The business logic in `compound_logic.py` is the day 8 copy of the day 6 logic.
 
