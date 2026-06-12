@@ -95,6 +95,6 @@ Please copy day 6 and suggest a web application using a web framework for it in 
 
 Make sure it has a "business logic" part that is tested.
 
-Write some tests for the web application as well.
+Help me write some tests for the web application as well.
 
 
