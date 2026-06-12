@@ -341,6 +341,7 @@ The prompt I used in ChatGPT to get some ideas what to show:
 It should be improved by also asking it to include links to how to download each dataset.
 
 After the lecture I realized I the code from the Iris example was lost so I tried it again, this time with slightly better prompts. You can see them in the README file in the day09/iris folder. You can also see the Jupyter notebook file there.
+
 Assignment (day 9)
 Pick a dataset that you would like to analyze. You can use one from your lab. You can ask ChatGPT to recommend one. You could download one from Kaggle or from any other place you find and like.
 
