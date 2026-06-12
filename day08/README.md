@@ -55,7 +55,7 @@ python web_app.py
 Then open this address in a browser:
 
 ```text
-http://127.0.0.1:8000
+http://127.0.0.1:8001
 ```
 
 The web page lets you choose compounds from the day 6 list and also type other

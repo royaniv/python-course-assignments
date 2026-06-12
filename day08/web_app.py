@@ -1,6 +1,7 @@
 import sys
 from html import escape
 from pathlib import Path
+from typing import List, Optional
 
 import uvicorn
 from fastapi import FastAPI, Query
@@ -66,13 +67,14 @@ def make_page(compound_text="", selected_compounds=None, found_compounds=None, s
 
 @app.get("/", response_class=HTMLResponse)
 def home(
-    submitted: str | None = None,
+    submitted: Optional[str] = None,
     compound_text: str = "",
-    selected_compounds: list[str] = Query(default=[]),
+    selected_compounds: Optional[List[str]] = Query(default=None),
 ):
     if submitted is None:
         return make_page()
 
+    selected_compounds = selected_compounds or []
     names = choose_compound_names(selected_compounds, compound_text)
     found, skipped = get_many_compounds(names)
     return make_page(compound_text, selected_compounds, found, skipped)
@@ -83,7 +85,7 @@ def styles():
     return PlainTextResponse(STYLE_PATH.read_text(encoding="utf-8"), media_type="text/css")
 
 
-def run_server(port=8000):
+def run_server(port=8001):
     print(f"Starting FastAPI web app at http://127.0.0.1:{port}/")
     uvicorn.run(app, host="127.0.0.1", port=port)
 
