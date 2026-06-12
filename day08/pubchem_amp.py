@@ -1,11 +1,4 @@
-import sys
-from pathlib import Path
-
-COURSE_ROOT = Path(__file__).resolve().parents[1]
-if str(COURSE_ROOT) not in sys.path:
-    sys.path.insert(0, str(COURSE_ROOT))
-
-from day06.compound_logic import get_many_compounds, load_compound_list
+from compound_logic import get_many_compounds, load_compound_list
 
 
 def main():

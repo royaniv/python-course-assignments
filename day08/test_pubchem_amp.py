@@ -1,16 +1,9 @@
-import sys
-from pathlib import Path
-
 import requests
 
+import compound_logic
 import pubchem_amp
 
-COURSE_ROOT = Path(__file__).resolve().parents[1]
-if str(COURSE_ROOT) not in sys.path:
-    sys.path.insert(0, str(COURSE_ROOT))
-
-import day06.compound_logic as day06_logic
-from day06.compound_logic import get_compound_names, get_many_compounds, get_pubchem_data
+from compound_logic import get_compound_names, get_many_compounds, get_pubchem_data
 
 
 class FakeResponse:
@@ -24,8 +17,8 @@ class FakeResponse:
         return self.data
 
 
-def test_plot_program_uses_day06_business_logic():
-    assert pubchem_amp.get_many_compounds is day06_logic.get_many_compounds
+def test_plot_program_uses_day08_business_logic():
+    assert pubchem_amp.get_many_compounds is compound_logic.get_many_compounds
 
 
 def test_get_compound_names_splits_text_into_names():

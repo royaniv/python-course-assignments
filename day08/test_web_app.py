@@ -1,14 +1,14 @@
 from fastapi.testclient import TestClient
 
-import day06.compound_logic as day06_logic
+import compound_logic
 import web_app
 
 
 client = TestClient(web_app.app)
 
 
-def test_web_app_uses_day06_business_logic():
-    assert web_app.get_many_compounds is day06_logic.get_many_compounds
+def test_web_app_uses_day08_business_logic():
+    assert web_app.get_many_compounds is compound_logic.get_many_compounds
 
 
 def test_home_page_renders_form():

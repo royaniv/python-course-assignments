@@ -1,4 +1,3 @@
-import sys
 from html import escape
 from pathlib import Path
 from typing import List, Optional
@@ -7,12 +6,8 @@ import uvicorn
 from fastapi import FastAPI, Query
 from fastapi.responses import HTMLResponse, PlainTextResponse
 
-COURSE_ROOT = Path(__file__).resolve().parents[1]
-if str(COURSE_ROOT) not in sys.path:
-    sys.path.insert(0, str(COURSE_ROOT))
-
 import plot_logic
-from day06.compound_logic import choose_compound_names, get_many_compounds, load_compound_list
+from compound_logic import choose_compound_names, get_many_compounds, load_compound_list
 
 
 STYLE_PATH = Path(__file__).with_name("styles.css")
