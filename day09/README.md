@@ -1,108 +1,43 @@
-# Day 9 - Exoplanet Temperateness Prediction
+# Day 9 - Ocean World Evidence Prediction
 
-This project uses confirmed exoplanet data from the NASA Exoplanet Archive. The
-goal is to predict whether an exoplanet is `temperate` or `not_temperate` from
-planet and star measurements.
+This project predicts whether a Solar System ocean-world candidate has
+`strong_evidence` or `possible_evidence` for a subsurface ocean.
 
-This relates to astrobiology because temperate planets are more interesting when
-thinking about possible habitability. This program is not claiming that a planet
-is habitable. It only makes a simple prediction based on equilibrium
-temperature.
-
-The prediction program uses a small k-nearest neighbors model written in regular
-Python. It does not need pandas, scikit-learn, or any other machine-learning
-package.
-
-## Dataset
-
-Dataset: Planetary Systems Composite Parameters
-
-Source: NASA Exoplanet Archive
-
-NASA TAP documentation:
-
-```text
-https://exoplanetarchive.ipac.caltech.edu/docs/TAP/usingTAP.html
-```
-
-NASA column documentation:
-
-```text
-https://exoplanetarchive.ipac.caltech.edu/docs/API_PS_columns.html
-```
-
-The program downloads a CSV from the NASA Exoplanet Archive TAP service. It uses
-this table:
-
-```text
-pscomppars
-```
-
-It downloads these columns:
-
-- `pl_name` - planet name
-- `hostname` - host star name
-- `pl_orbper` - orbital period
-- `pl_rade` - planet radius
-- `st_teff` - stellar effective temperature
-- `st_rad` - stellar radius
-- `st_mass` - stellar mass
-- `pl_eqt` - planet equilibrium temperature
-
-The prediction uses the planet/star measurements as inputs. It uses
-`pl_eqt` only to create the answer label:
-
-- `temperate` if equilibrium temperature is between 180 K and 310 K
-- `not_temperate` otherwise
+The dataset is small and included in this folder. It uses ocean-world candidates
+such as Europa, Enceladus, Titan, Ganymede, Callisto, Ceres, Pluto, Triton,
+Dione, Mimas, Ariel, and Titania.
 
 ## Files
 
-- `exoplanet_prediction.py` - downloads the dataset, trains the prediction
-  model, and prints/saves the results.
-- `test_exoplanet_prediction.py` - tests the prediction functions without using
-  the internet.
-- `requirements.txt` - installs pytest for the optional tests.
-- `README.md` - this file.
+- `ocean_world_prediction.py` - loads the data, runs the prediction model, and
+  saves a report.
+- `data/ocean_worlds.csv` - the included dataset.
+- `test_ocean_world_prediction.py` - tests the prediction functions.
+- `requirements.txt` - installs pytest for the tests.
 
-When the script runs, it creates:
+## Data
 
-- `data/exoplanets.csv` - the downloaded dataset.
-- `results/prediction_report.txt` - the prediction summary.
+The dataset columns are:
 
-## How To Download The Data
+- `world`
+- `location`
+- `radius_km`
+- `density_g_cm3`
+- `surface_temp_k`
+- `activity_score`
+- `ocean_evidence`
 
-The easiest way is to run the program. If `data/exoplanets.csv` is missing, the
-script downloads it automatically:
+`activity_score` is a simple classroom score from 1 to 5. A higher score means
+more visible signs of activity, such as plumes, resurfacing, or tidal heating.
 
-```text
-python exoplanet_prediction.py
-```
+The label is:
 
-If you want to download it manually, open this URL in a browser:
-
-```text
-https://exoplanetarchive.ipac.caltech.edu/TAP/sync?query=select+pl_name,hostname,pl_orbper,pl_rade,st_teff,st_rad,st_mass,pl_eqt+from+pscomppars+where+pl_orbper+is+not+null+and+pl_rade+is+not+null+and+st_teff+is+not+null+and+st_rad+is+not+null+and+st_mass+is+not+null+and+pl_eqt+is+not+null&format=csv
-```
-
-Save the file as:
-
-```text
-day09/data/exoplanets.csv
-```
-
-Then run:
-
-```text
-python exoplanet_prediction.py
-```
+- `strong_evidence`
+- `possible_evidence`
 
 ## How To Run
 
-Open a terminal in the `day09` folder:
-
-```text
-cd day09
-```
+Open a terminal in the `day09` folder.
 
 Install requirements:
 
@@ -110,39 +45,32 @@ Install requirements:
 python -m pip install -r requirements.txt
 ```
 
-Run the prediction:
+Run the program:
 
 ```text
-python exoplanet_prediction.py
+python ocean_world_prediction.py
 ```
 
-The program prints the accuracy and the first 10 predictions. It also saves the
-same report in:
+The program prints a short report and saves it here:
 
 ```text
 results/prediction_report.txt
 ```
 
-## What The Prediction Does
+## How The Prediction Works
 
-The script splits the data into:
+The code uses a simple k-nearest neighbors model.
 
-- training rows
-- testing rows
+For each test world, it finds the most similar training worlds using:
 
-For each test planet, it finds the closest training planets using:
+- radius
+- density
+- surface temperature
+- activity score
 
-- orbital period
-- planet radius
-- stellar effective temperature
-- stellar radius
-- stellar mass
+The most common label among the nearest worlds becomes the prediction.
 
-The most common label among the closest planets becomes the prediction.
-
-This method is called k-nearest neighbors.
-
-## How To Run The Tests
+## Tests
 
 From the `day09` folder, run:
 
@@ -150,27 +78,10 @@ From the `day09` folder, run:
 python -m pytest
 ```
 
-The tests use small fake data, so they do not need the internet.
+## Prompt
 
-## Prompts
+The assignment was to choose a dataset, create a prediction from the data, add a
+README, and make the example easy to rerun.
 
-### Prompt 1
-
-for day09 i was assigned - Pick a dataset that you would like to analyze. You
-can use one from your lab. You can ask ChatGPT to recommend one. You could
-download one from Kaggle or from any other place you find and like.
-
-Create a prediction base on the data.
-
-Add a README and make it easy for us to rerun the example providing clear
-instruction how to download the data. Include your prompts.
-
-### Prompt 2
-
-i do not want iris prediction for day 9 also in the code explanation and the
-whole programs from day 8 you wrote that you are using path in case there is a
-compound txt file but there is none so why do this?
-
-### Prompt 3
-
-no i dont want a wine list. i want a dataset that relates to astrobiology please
+I changed the topic to astrobiology and used only Solar System ocean-world
+candidates instead of planets outside the Solar System.

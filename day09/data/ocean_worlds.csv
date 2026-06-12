@@ -1,0 +1,13 @@
+world,location,radius_km,density_g_cm3,surface_temp_k,activity_score,ocean_evidence
+Europa,Jupiter moon,1560.8,3.01,102,5,strong_evidence
+Enceladus,Saturn moon,252.1,1.61,75,5,strong_evidence
+Titan,Saturn moon,2574.7,1.88,94,4,strong_evidence
+Ganymede,Jupiter moon,2634.1,1.94,110,3,strong_evidence
+Callisto,Jupiter moon,2410.3,1.83,134,2,possible_evidence
+Ceres,Asteroid belt dwarf planet,469.7,2.16,168,2,possible_evidence
+Pluto,Kuiper belt dwarf planet,1188.3,1.86,44,2,possible_evidence
+Triton,Neptune moon,1353.4,2.06,38,3,possible_evidence
+Dione,Saturn moon,561.4,1.48,87,2,possible_evidence
+Mimas,Saturn moon,198.2,1.15,64,1,possible_evidence
+Ariel,Uranus moon,578.9,1.59,60,2,possible_evidence
+Titania,Uranus moon,788.4,1.71,70,1,possible_evidence

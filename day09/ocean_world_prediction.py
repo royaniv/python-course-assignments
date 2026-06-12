@@ -3,55 +3,19 @@ import math
 import random
 from collections import Counter
 from pathlib import Path
-from urllib.parse import urlencode
-from urllib.request import urlretrieve
 
 
-TAP_URL = "https://exoplanetarchive.ipac.caltech.edu/TAP/sync"
-QUERY = """
-select pl_name,hostname,pl_orbper,pl_rade,st_teff,st_rad,st_mass,pl_eqt
-from pscomppars
-where pl_orbper is not null
-and pl_rade is not null
-and st_teff is not null
-and st_rad is not null
-and st_mass is not null
-and pl_eqt is not null
-"""
-DATA_PATH = Path(__file__).with_name("data") / "exoplanets.csv"
+DATA_PATH = Path(__file__).with_name("data") / "ocean_worlds.csv"
 REPORT_PATH = Path(__file__).with_name("results") / "prediction_report.txt"
 FEATURE_NAMES = [
-    "orbital period in days",
-    "planet radius in Earth radii",
-    "stellar effective temperature in K",
-    "stellar radius in Solar radii",
-    "stellar mass in Solar masses",
+    "radius in km",
+    "density in g/cm3",
+    "surface temperature in K",
+    "activity score",
 ]
 
 
-def make_data_url():
-    query = " ".join(QUERY.split())
-    arguments = urlencode({"query": query, "format": "csv"})
-    return TAP_URL + "?" + arguments
-
-
-def download_data(data_path=DATA_PATH):
-    data_path.parent.mkdir(exist_ok=True)
-    urlretrieve(make_data_url(), data_path)
-    return data_path
-
-
-def temperature_label(equilibrium_temperature):
-    if 180 <= equilibrium_temperature <= 310:
-        return "temperate"
-
-    return "not_temperate"
-
-
 def load_data(data_path=DATA_PATH):
-    if not data_path.exists():
-        download_data(data_path)
-
     samples = []
 
     with data_path.open("r", encoding="utf-8", newline="") as handle:
@@ -60,23 +24,20 @@ def load_data(data_path=DATA_PATH):
         for row in reader:
             try:
                 measurements = [
-                    float(row["pl_orbper"]),
-                    float(row["pl_rade"]),
-                    float(row["st_teff"]),
-                    float(row["st_rad"]),
-                    float(row["st_mass"]),
+                    float(row["radius_km"]),
+                    float(row["density_g_cm3"]),
+                    float(row["surface_temp_k"]),
+                    float(row["activity_score"]),
                 ]
-                equilibrium_temperature = float(row["pl_eqt"])
             except (KeyError, TypeError, ValueError):
                 continue
 
             samples.append(
                 {
-                    "planet": row["pl_name"],
-                    "host": row["hostname"],
+                    "world": row["world"],
+                    "location": row["location"],
                     "measurements": measurements,
-                    "equilibrium_temperature": equilibrium_temperature,
-                    "label": temperature_label(equilibrium_temperature),
+                    "label": row["ocean_evidence"],
                 }
             )
 
@@ -100,9 +61,7 @@ def make_feature_ranges(train_samples):
 
     for index in range(feature_count):
         values = [sample["measurements"][index] for sample in train_samples]
-        smallest = min(values)
-        largest = max(values)
-        ranges.append((smallest, largest))
+        ranges.append((min(values), max(values)))
 
     return ranges
 
@@ -130,7 +89,7 @@ def distance(first_measurements, second_measurements):
     return math.sqrt(total)
 
 
-def predict_label(train_samples, measurements, feature_ranges, k=5):
+def predict_label(train_samples, measurements, feature_ranges, k=3):
     scaled_measurements = scale_measurements(measurements, feature_ranges)
 
     neighbors = sorted(
@@ -146,7 +105,7 @@ def predict_label(train_samples, measurements, feature_ranges, k=5):
     return votes.most_common(1)[0][0]
 
 
-def evaluate_model(train_samples, test_samples, k=5):
+def evaluate_model(train_samples, test_samples, k=3):
     correct = 0
     prediction_rows = []
     feature_ranges = make_feature_ranges(train_samples)
@@ -165,9 +124,8 @@ def evaluate_model(train_samples, test_samples, k=5):
 
         prediction_rows.append(
             {
-                "planet": sample["planet"],
-                "host": sample["host"],
-                "equilibrium_temperature": sample["equilibrium_temperature"],
+                "world": sample["world"],
+                "location": sample["location"],
                 "actual": sample["label"],
                 "predicted": predicted_label,
                 "correct": is_correct,
@@ -184,14 +142,14 @@ def label_counts(samples):
 
 def make_report(samples, train_samples, test_samples, accuracy, prediction_rows):
     lines = [
-        "Exoplanet Temperateness Prediction",
+        "Ocean World Evidence Prediction",
         "",
         f"Dataset rows: {len(samples)}",
         f"Training rows: {len(train_samples)}",
         f"Testing rows: {len(test_samples)}",
         f"Accuracy: {accuracy:.1%}",
         "",
-        "Target labels:",
+        "Labels:",
     ]
 
     for label, count in sorted(label_counts(samples).items()):
@@ -200,29 +158,20 @@ def make_report(samples, train_samples, test_samples, accuracy, prediction_rows)
     lines.extend(
         [
             "",
-            "The model predicts whether an exoplanet is temperate from:",
+            "The model predicts the evidence label from:",
         ]
     )
 
     for feature_name in FEATURE_NAMES:
         lines.append(f"- {feature_name}")
 
-    lines.extend(
-        [
-            "",
-            "A planet is labelled temperate if its equilibrium temperature is",
-            "between 180 K and 310 K.",
-            "",
-            "First 10 test predictions:",
-        ]
-    )
+    lines.extend(["", "Test predictions:"])
 
-    for row in prediction_rows[:10]:
+    for row in prediction_rows:
         status = "correct" if row["correct"] else "wrong"
         lines.append(
-            f"- {row['planet']} around {row['host']}: predicted {row['predicted']}; "
-            f"actual {row['actual']}; Teq {row['equilibrium_temperature']:.0f} K "
-            f"({status})"
+            f"- {row['world']} ({row['location']}): predicted {row['predicted']}; "
+            f"actual {row['actual']} ({status})"
         )
 
     return "\n".join(lines)

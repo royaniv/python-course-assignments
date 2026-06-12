@@ -1,0 +1,21 @@
+Ocean World Evidence Prediction
+
+Dataset rows: 12
+Training rows: 9
+Testing rows: 3
+Accuracy: 66.7%
+
+Labels:
+- possible_evidence: 8
+- strong_evidence: 4
+
+The model predicts the evidence label from:
+- radius in km
+- density in g/cm3
+- surface temperature in K
+- activity score
+
+Test predictions:
+- Dione (Saturn moon): predicted possible_evidence; actual possible_evidence (correct)
+- Pluto (Kuiper belt dwarf planet): predicted possible_evidence; actual possible_evidence (correct)
+- Ganymede (Jupiter moon): predicted possible_evidence; actual strong_evidence (wrong)
