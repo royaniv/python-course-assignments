@@ -1,21 +1,33 @@
-Ocean World Evidence Prediction
+Kepler KOI Planet Classification
 
-Dataset rows: 12
-Training rows: 9
-Testing rows: 3
-Accuracy: 66.7%
+Dataset rows: 7326
+Training rows: 5128
+Testing rows: 2198
+Accuracy: 80.9%
 
-Labels:
-- possible_evidence: 8
-- strong_evidence: 4
+Target labels:
+- CONFIRMED: 2745
+- FALSE POSITIVE: 4581
 
-The model predicts the evidence label from:
-- radius in km
-- density in g/cm3
-- surface temperature in K
-- activity score
+The model predicts the Exoplanet Archive disposition from:
+- orbital period in days
+- transit duration in hours
+- transit depth in parts per million
+- impact parameter
+- estimated planet radius in Earth radii
+- stellar effective temperature in K
+- stellar radius in Solar radii
+- stellar surface gravity
+- Kepler-band magnitude
 
-Test predictions:
-- Dione (Saturn moon): predicted possible_evidence; actual possible_evidence (correct)
-- Pluto (Kuiper belt dwarf planet): predicted possible_evidence; actual possible_evidence (correct)
-- Ganymede (Jupiter moon): predicted possible_evidence; actual strong_evidence (wrong)
+First 10 test predictions:
+- K06023.01: predicted FALSE POSITIVE; actual FALSE POSITIVE (correct)
+- K01822.01: predicted CONFIRMED; actual CONFIRMED (correct)
+- K01306.03: predicted CONFIRMED; actual CONFIRMED (correct)
+- K03488.01: predicted CONFIRMED; actual FALSE POSITIVE (wrong)
+- K08003.01: predicted FALSE POSITIVE; actual FALSE POSITIVE (correct)
+- K02828.01: predicted CONFIRMED; actual CONFIRMED (correct)
+- K00440.02: predicted CONFIRMED; actual CONFIRMED (correct)
+- K00690.01: predicted FALSE POSITIVE; actual FALSE POSITIVE (correct)
+- K03461.02: predicted FALSE POSITIVE; actual FALSE POSITIVE (correct)
+- K03381.01: predicted FALSE POSITIVE; actual FALSE POSITIVE (correct)

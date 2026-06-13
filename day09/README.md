@@ -1,43 +1,126 @@
-# Day 9 - Ocean World Evidence Prediction
+# Day 9 - Kepler Exoplanet Signal Prediction
 
-This project predicts whether a Solar System ocean-world candidate has
-`strong_evidence` or `possible_evidence` for a subsurface ocean.
+This project uses real data from the NASA Exoplanet Archive to predict whether a
+Kepler Object of Interest is a confirmed exoplanet or a false positive.
 
-The dataset is small and included in this folder. It uses ocean-world candidates
-such as Europa, Enceladus, Titan, Ganymede, Callisto, Ceres, Pluto, Triton,
-Dione, Mimas, Ariel, and Titania.
+This is similar to the classic Iris machine-learning example:
+
+- Iris uses flower measurements to predict the flower species.
+- This project uses Kepler transit and star measurements to predict the KOI
+  disposition.
+
+The machine-learning code uses scikit-learn:
+
+```python
+model.fit(training_inputs, training_answers)
+predictions = model.predict(test_inputs)
+```
+
+## Dataset
+
+Dataset: Kepler Objects of Interest, cumulative table
+
+Source: NASA Exoplanet Archive
+
+NASA TAP documentation:
+
+```text
+https://exoplanetarchive.ipac.caltech.edu/docs/TAP/usingTAP.html
+```
+
+NASA column documentation:
+
+```text
+https://exoplanetarchive.ipac.caltech.edu/docs/API_kepcandidate_columns.html
+```
+
+The program downloads a CSV from the NASA Exoplanet Archive TAP service. It uses
+this table:
+
+```text
+cumulative
+```
+
+It downloads only rows where `koi_disposition` is either:
+
+- `CONFIRMED`
+- `FALSE POSITIVE`
+
+Rows labelled `CANDIDATE` are left out because they are not final labels.
+
+## Prediction
+
+The program gives the model these input measurements:
+
+- `koi_period` - orbital period
+- `koi_duration` - transit duration
+- `koi_depth` - how much the star dims during the transit
+- `koi_impact` - transit geometry
+- `koi_prad` - estimated planet radius
+- `koi_steff` - star temperature
+- `koi_srad` - star radius
+- `koi_slogg` - star surface gravity
+- `koi_kepmag` - Kepler-band brightness
+
+The model predicts this answer:
+
+```text
+koi_disposition
+```
+
+The answer is either:
+
+- `CONFIRMED`
+- `FALSE POSITIVE`
 
 ## Files
 
-- `ocean_world_prediction.py` - loads the data, runs the prediction model, and
+- `kepler_koi_prediction.py` - downloads the dataset, trains the model, and
   saves a report.
-- `data/ocean_worlds.csv` - the included dataset.
-- `test_ocean_world_prediction.py` - tests the prediction functions.
-- `requirements.txt` - installs pytest for the tests.
+- `test_kepler_koi_prediction.py` - tests the program with a small fake CSV, so
+  tests do not need the internet.
+- `requirements.txt` - installs pytest and scikit-learn.
+- `README.md` - this file.
 
-## Data
+When the script runs, it creates:
 
-The dataset columns are:
+- `data/kepler_koi.csv` - the downloaded NASA dataset.
+- `results/prediction_report.txt` - the prediction summary.
 
-- `world`
-- `location`
-- `radius_km`
-- `density_g_cm3`
-- `surface_temp_k`
-- `activity_score`
-- `ocean_evidence`
+## How To Download The Data
 
-`activity_score` is a simple classroom score from 1 to 5. A higher score means
-more visible signs of activity, such as plumes, resurfacing, or tidal heating.
+The easiest way is to run the program. If `data/kepler_koi.csv` is missing, the
+script downloads it automatically:
 
-The label is:
+```text
+python kepler_koi_prediction.py
+```
 
-- `strong_evidence`
-- `possible_evidence`
+If you want to download it manually, open this URL in a browser:
+
+```text
+https://exoplanetarchive.ipac.caltech.edu/TAP/sync?query=select+kepoi_name,koi_disposition,koi_period,koi_duration,koi_depth,koi_impact,koi_prad,koi_steff,koi_srad,koi_slogg,koi_kepmag+from+cumulative+where+koi_disposition+in+('CONFIRMED','FALSE+POSITIVE')+and+koi_period+is+not+null+and+koi_duration+is+not+null+and+koi_depth+is+not+null+and+koi_impact+is+not+null+and+koi_prad+is+not+null+and+koi_steff+is+not+null+and+koi_srad+is+not+null+and+koi_slogg+is+not+null+and+koi_kepmag+is+not+null&format=csv
+```
+
+Save the file as:
+
+```text
+day09/data/kepler_koi.csv
+```
+
+Then run:
+
+```text
+python kepler_koi_prediction.py
+```
 
 ## How To Run
 
-Open a terminal in the `day09` folder.
+Open a terminal in the `day09` folder:
+
+```text
+cd day09
+```
 
 Install requirements:
 
@@ -45,30 +128,40 @@ Install requirements:
 python -m pip install -r requirements.txt
 ```
 
-Run the program:
+Run the prediction:
 
 ```text
-python ocean_world_prediction.py
+python kepler_koi_prediction.py
 ```
 
-The program prints a short report and saves it here:
+The program prints the accuracy and the first 10 predictions. It also saves the
+same report in:
 
 ```text
 results/prediction_report.txt
 ```
 
-## How The Prediction Works
+## How The Machine Learning Works
 
-The code uses a simple k-nearest neighbors model.
+The script splits the NASA rows into:
 
-For each test world, it finds the most similar training worlds using:
+- training rows
+- testing rows
 
-- radius
-- density
-- surface temperature
-- activity score
+The model learns from the training rows. Each training row has input
+measurements and the known answer from NASA:
 
-The most common label among the nearest worlds becomes the prediction.
+```text
+inputs -> CONFIRMED or FALSE POSITIVE
+```
+
+After training, the model receives test rows without looking at their answers.
+It predicts the label, and the program compares the prediction to the real NASA
+label to calculate accuracy.
+
+The model is a k-nearest neighbors classifier. It predicts a test object by
+looking for the most similar objects in the training data and copying the most
+common label among those neighbors.
 
 ## Tests
 
@@ -78,10 +171,33 @@ From the `day09` folder, run:
 python -m pytest
 ```
 
-## Prompt
+The tests use a small fake CSV, so they do not need the internet.
 
-The assignment was to choose a dataset, create a prediction from the data, add a
-README, and make the example easy to rerun.
+## Prompts
 
-I changed the topic to astrobiology and used only Solar System ocean-world
-candidates instead of planets outside the Solar System.
+### Prompt 1
+
+for day09 i was assigned - Pick a dataset that you would like to analyze. You
+can use one from your lab. You can ask ChatGPT to recommend one. You could
+download one from Kaggle or from any other place you find and like.
+
+Create a prediction base on the data.
+
+Add a README and make it easy for us to rerun the example providing clear
+instruction how to download the data. Include your prompts.
+
+### Prompt 2
+
+i do not want iris prediction for day 9 also in the code explanation and the
+whole programs from day 8 you wrote that you are using path in case there is a
+compound txt file but there is none so why do this?
+
+### Prompt 3
+
+no i dont want a wine list. i want a dataset that relates to astrobiology please
+
+### Prompt 4
+
+I want this to be closer to the machine-learning examples where the model learns
+from sample inputs and predicts a class, like Iris flower prediction or
+cat-versus-dog prediction.
